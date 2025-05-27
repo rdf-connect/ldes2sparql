@@ -1,0 +1,16 @@
+{
+  "name": "@rdfc/ldes2sparql",
+  "version": "0.1.0",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@rdfc/js-runner": "^1.0.0",
+    "ldes-client": "^0.1.8",
+    "@rdfc/sparql-ingest-processor-ts": "^0.3.0"
+  }
+}

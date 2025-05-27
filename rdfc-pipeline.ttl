@@ -1,0 +1,64 @@
+@prefix js: <https://w3id.org/conn/js#>.
+@prefix : <https://w3id.org/conn#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix idlab-fn: <https://w3id.org/imec/idlab/function#>.
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix formats: <http://www.w3.org/ns/formats/>.
+@prefix ldes: <https://w3id.org/ldes#>.
+
+<> owl:imports <./node_modules/@rdfc/js-runner/ontology.ttl>,
+    <./node_modules/ldes-client/processor.ttl>,
+    #<./node_modules/@rdfc/sparql-ingest-processor-ts/processors.ttl>,
+    <./node_modules/@rdfc/js-runner/processor/resc.ttl>. # Testing procesor
+
+#########################################
+# Channel definitions
+#########################################
+
+# Channel for js:LdesClient -> js:SPARQLIngest
+<raw-member/reader> a js:JsReaderChannel.
+<raw-member/writer> a js:JsWriterChannel.
+[ ] a js:JsChannel;
+   :reader <raw-member/reader>;
+   :writer <raw-member/writer>.
+
+
+#########################################
+# Processor definitions
+#########################################
+
+# Processor to read member events from a LDES
+[ ] a js:LdesClient;
+    js:output <raw-member/writer>;
+    js:url <${LDES}>;
+    #js:url <https://marineregions.org/feed>;
+    js:ordered "${ORDER}";
+    js:follow true;
+    #js:before "2024-11-10T19:00:00Z"^^xsd:dateTime;
+    #js:after "2024-11-10T18:00:00Z"^^xsd:dateTime;
+    js:materialize true;
+    #js:lastVersionOnly true;
+    #js:shapeFile <./mr-shape.ttl>;
+    #js:shapeFile <./mr-geo-shape.ttl>;
+    js:fetch [
+        js:concurrent 1;
+        js:retry [
+            js:code 429;
+            js:maxRetry 15
+        ]
+    ].
+    #js:savePath <./state/save.json>.
+
+[ ] a js:Resc;
+    js:rescReader  <raw-member/reader>.
+
+# [ ] a js:SPARQLIngest; 
+#     js:memberStream <raw-member/reader>;
+#     js:ingestConfig [
+#         js:memberIsGraph false;
+#         js:targetNamedGraph <${TARGET_GRAPH}>;
+#         js:graphStoreUrl <${SPARQL}>
+#     ];
+#     js:sparqlWriter <test/writer>.
