@@ -1,12 +1,16 @@
-#!/bin/bash
+#!/bin/sh
 
-# Replace environment variables
-sed -i "s;\${LDES};$LDES;g;" rdfc-pipeline.ttl
-sed -i "s;\${ORDER};$ORDER;g;" rdfc-pipeline.ttl
-sed -i "s;\${SPARQL_ENDPOINT};$SPARQL_ENDPOINT;g;" rdfc-pipeline.ttl
-sed -i "s;\${TARGET_GRAPH};$TARGET_GRAPH;g;" rdfc-pipeline.ttl
+# Replace any environment variable in the pipeline file
+envs=`printenv`
 
-cat rdfc-pipeline.ttl
+for env in $envs
+do
+    echo "$env" | { 
+        IFS='=' read name value;
+        sed -i "s|\${${name}}|${value}|g" ./rdfc-pipeline.ttl;
+    }
+done
+
 
 # Execute the RDF-Connect pipeline with the JS-Runner
 exec npx @rdfc/js-runner rdfc-pipeline.ttl

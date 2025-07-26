@@ -1,5 +1,7 @@
 # Start from a Node.js ready image
 FROM node:lts-alpine
+# Create the folder for keeping the state
+RUN mkdir -p /state
 # Set current working directory
 WORKDIR /rdfc-pipeline
 # Copy configuration files

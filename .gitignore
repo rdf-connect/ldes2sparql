@@ -1,1 +1,8 @@
 node_modules
+state
+examples/virtuoso/virtuoso.db
+examples/virtuoso/virtuoso.log
+examples/virtuoso/virtuoso-temp.db
+examples/virtuoso/virtuoso.lck
+examples/virtuoso/virtuoso.pxa
+examples/virtuoso/virtuoso.trx
