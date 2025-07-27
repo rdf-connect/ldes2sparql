@@ -86,11 +86,7 @@
     js:memberStream <raw-member/reader>;
     js:ingestConfig [
         js:memberIsGraph false;
-        js:targetNamedGraph [ # Target named graph where the triples will be written
-            a rdfl:EnvVariable;
-            rdfl:envDefault "${TARGET_GRAPH}";
-            rdfl:envKey "TARGET_GRAPH"
-        ];
+        js:targetNamedGraph "${TARGET_GRAPH}";
         js:graphStoreUrl [ # SPARQL endpoint URL
             a rdfl:EnvVariable;
             rdfl:envDefault "${SPARQL_ENDPOINT}";

@@ -1,8 +1,18 @@
 node_modules
 state
+# Virtuoso
 examples/virtuoso/virtuoso.db
 examples/virtuoso/virtuoso.log
 examples/virtuoso/virtuoso-temp.db
 examples/virtuoso/virtuoso.lck
 examples/virtuoso/virtuoso.pxa
 examples/virtuoso/virtuoso.trx
+# Oxigraph
+examples/oxigraph/*.log
+examples/oxigraph/*.sst
+examples/oxigraph/CURRENT
+examples/oxigraph/IDENTITY
+examples/oxigraph/LOCK
+examples/oxigraph/LOG
+examples/oxigraph/MANIFEST-*
+examples/oxigraph/OPTIONS-*
