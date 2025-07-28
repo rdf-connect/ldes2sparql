@@ -96,5 +96,6 @@
             a rdfl:EnvVariable;
             rdfl:envDefault "500"^^xsd:integer;
             rdfl:envKey "MAX_QUERY_LENGTH"
-        ]
+        ];
+        js:accessToken "${ACCESS_TOKEN}" # Required for Qlever
     ].
