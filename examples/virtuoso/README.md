@@ -6,7 +6,7 @@ In this example we show how to replicate and materialize the (mirrored) [Marine 
 
 We rely on the official [Virtuoso Docker image](https://hub.docker.com/r/openlink/virtuoso-opensource-7/). 
 
-Make sure to provide enough memory resources via the [`NumberOfBuffers`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/virtuoso.ini#L95) and [`MaxDirtyBuffers`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/virtuoso.ini#L96) properties in the [`virtuoso.ini`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/virtuoso.ini) configuration file. The performance of SPARQL UPDATE queries largely depends on the given memmory.
+Make sure to provide enough memory resources via the [`NumberOfBuffers`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/virtuoso.ini#L95) and [`MaxDirtyBuffers`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/virtuoso.ini#L96) properties in the [`virtuoso.ini`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/virtuoso.ini) configuration file. The performance of SPARQL UPDATE queries largely depends on the given memory.
 
 
 Run the following commands to spin up a Virtuoso instance:

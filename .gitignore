@@ -16,3 +16,7 @@ examples/oxigraph/LOCK
 examples/oxigraph/LOG
 examples/oxigraph/MANIFEST-*
 examples/oxigraph/OPTIONS-*
+# Qlever
+examples/qlever/*.txt
+examples/qlever/marine-regions*
+!examples/qlever/marine-regions.settings.json
