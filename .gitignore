@@ -20,3 +20,6 @@ examples/oxigraph/OPTIONS-*
 examples/qlever/*.txt
 examples/qlever/marine-regions*
 !examples/qlever/marine-regions.settings.json
+# Fuseki
+examples/fuseki/tdb.lock
+examples/fuseki/Data*
