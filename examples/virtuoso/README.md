@@ -11,14 +11,18 @@ Make sure to provide enough memory resources via the [`NumberOfBuffers`](https:/
 
 Run the following commands to spin up a Virtuoso instance:
 
+1. Pull the latest Virtuoso image:
 ```bash
 docker pull openlink/virtuoso-opensource-7
+```
+2. Start up a Virtuoso instance:
+```bash
 docker run --name virtuoso --env DBA_PASSWORD=YOUR_PWD -p 1111:1111 -p 8890:8890 -v `pwd`:/database -it openlink/virtuoso-opensource-7:latest
 ```
 
 ### Enable SPARQL UPDATE on Virtuoso
 
-By default SPARQL UDPATE queries are not allowed in Virtuoso. To enable them, follow these steps:
+By default, SPARQL UDPATE queries are not allowed in Virtuoso. To enable them, follow these steps:
 
 **⚠️Warning⚠️**: For this example, we allow full unrestricted SPARQL UPDATE permission over all named graphs. However, for production deployments, proper security and access control configurations should be made. See [the documentation](https://docs.openlinksw.com/virtuoso/rdfsparqlprotocolendpoint/#rdfsupportedprotocolendpointurisparqlauthex) for Virtuoso.
 

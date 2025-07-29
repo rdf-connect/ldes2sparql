@@ -10,7 +10,7 @@ We rely on the official [Qlever Docker image](https://hub.docker.com/r/adfreibur
 ```bash
 docker pull adfreiburg/qlever:latest
 ```
-2. Build an index structure:
+2. Build an index structure. Here Qlever requires a configuration file, for which we give an example with [marine-regions.settings.json](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/qlever/marine-regions.settings.json):
 ```bash
 docker run -u $(id -u):$(id -g) --rm -v /etc/localtime:/etc/localtime:ro -v $(pwd):/index -w /index --init --entrypoint bash --name qlever adfreiburg/qlever -c "IndexBuilderMain -i marine-regions -s marine-regions.settings.json -F ttl -f - --stxxl-memory 10G | tee qlever.index-log.txt"
 ```
