@@ -6,8 +6,12 @@ In this example we show how to replicate and materialize the (mirrored) [Marine 
 
 We rely on the official [Oxigraph Docker image](ghcr.io/oxigraph/oxigraph). Run the following commands to spin up an Oxigraph instance:
 
+1. Pull the latest Oxigraph Docker image:
 ```bash
 docker pull ghcr.io/oxigraph/oxigraph:latest
+```
+2. Start up an Oxigraph instance:
+```bash
 docker run -v `pwd`:/data -p 7878:7878 ghcr.io/oxigraph/oxigraph serve --location /data --bind 0.0.0.0:7878
 ```
 
@@ -29,7 +33,7 @@ LDES=http://193.190.127.143:8080/marine-regions-mirror/ldes
 MATERIALIZE=true
 
 ### SPARQL ingest variables
-SPARQL_ENDPOINT=http://{YOUR_LOCAL_IP}:8890/sparql
+SPARQL_ENDPOINT=http://{YOUR_LOCAL_IP}:7878/update
 TARGET_GRAPH=https://www.marineregions.org/graph # For Oxigraph a named graph is optional
 MAX_QUERY_LENGTH=10000 # A high number as it optimizes write performance
 ```
