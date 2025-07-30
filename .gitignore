@@ -24,3 +24,8 @@ examples/qlever/marine-regions*
 # Fuseki
 examples/fuseki/tdb.lock
 examples/fuseki/Data*
+# GraphDB
+examples/graphdb/data
+examples/graphdb/logs
+examples/graphdb/work
+examples/graphdb/conf/graphdb.license
