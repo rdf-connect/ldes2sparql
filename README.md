@@ -2,7 +2,7 @@
 
 [RDF-Connect](https://rdf-connect.github.io/) pipeline for materializing [Linked Data Event Streams (LDES)](https://w3id.org/ldes/specification) into a target SPARQL graph store.
 
-Internally, it uses the Typescript [ldes-client](https://github.com/rdf-connect/ldes-client) and the also Typescript [sparql-ingest-processor](https://github.com/rdf-connect/sparql-ingest-processor-ts) library.  
+Internally, it uses the Typescript [ldes-client](https://github.com/rdf-connect/ldes-client) and the also Typescript [sparql-ingest-processor](https://github.com/rdf-connect/sparql-ingest-processor-ts).  
 
 ## Run with docker
 
@@ -32,7 +32,7 @@ docker run \
 ghcr.io/rdf-connect/ldes2sparql:latest
 ```
 
-The container can also be run using an environment config file as follows:
+The container can also be run using an environment [config file](https://github.com/rdf-connect/ldes2sparql/blob/main/conf.env) as follows:
 
 ```bash
 docker run --env-file conf.env -v /your/state/folder:/state ghcr.io/rdf-connect/ldes2sparql:latest
@@ -42,7 +42,7 @@ A descritpion of all available environment variables is presented next:
 
 - **`LDES`**: The URL of the LDES to be replicated and followed.
 - **`SPARQL_ENDPOINT`**: The URL of the target SPARQL graph store, which must support the [SPARQL UPDATE specification](https://www.w3.org/TR/sparql11-update/).
-- **`TARGET_GRAPH`** (optional): An IRI of a targeted named graph where all replicated triples will be written.
+- **`TARGET_GRAPH`** (optional): An IRI of a targeted named graph where all replicated triples will be written. If not required, define it with an empty value (`TARGET_GRAPH=`), otherwise invalid queries will be produced.
 - **`ORDER`** (optional): An instruction for the LDES client to emit members in `ascending` or `descending` temporal order (based on the `ldes:timestampPath` property value).
 - **`FOLLOW`** (optional): A property that indicates whether the LDES client should continue to poll the LDES for new events after the replication has been completed. The default value is `false`.
 - **`POLLING_FREQUENCY`** (optional): A property that instructs the client to poll the LDES following the given frequency to check for new events after replication. It is given in milliseconds and it is ignored if `FOLLOW` is set to `false`. 

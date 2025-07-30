@@ -62,5 +62,5 @@ MAX_QUERY_LENGTH=500 # A low number to avoid Virtuoso hard query limits
 ```
 3. Execute the pipeline with the following Docker command:
 ```bash
-docker run --env-file conf.env ldes2sparql
+docker run --env-file conf.env ghcr.io/rdf-connect/ldes2sparql
 ```

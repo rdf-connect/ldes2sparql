@@ -1,5 +1,6 @@
 node_modules
 state
+conf2.env
 # Virtuoso
 examples/virtuoso/virtuoso.db
 examples/virtuoso/virtuoso.log
