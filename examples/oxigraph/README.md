@@ -4,7 +4,7 @@ In this example we show how to replicate and materialize the (mirrored) [Marine 
 
 ## Start up Oxigraph
 
-We rely on the official [Oxigraph Docker image](ghcr.io/oxigraph/oxigraph). Run the following commands to spin up an Oxigraph instance:
+We rely on the official [Oxigraph Docker image](https://github.com/oxigraph/oxigraph/pkgs/container/oxigraph). Run the following commands to spin up an Oxigraph instance:
 
 1. Pull the latest Oxigraph Docker image:
 ```bash

@@ -1,6 +1,6 @@
 {
   "name": "@rdfc/ldes2sparql",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "type": "module",
   "devDependencies": {
     "bun-types": "latest"
