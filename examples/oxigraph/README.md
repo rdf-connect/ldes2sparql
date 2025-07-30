@@ -39,5 +39,5 @@ MAX_QUERY_LENGTH=10000 # A high number as it optimizes write performance
 ```
 3. Execute the pipeline with the following Docker command:
 ```bash
-docker run --env-file conf.env ldes2sparql
+docker run --env-file conf.env ghcr.io/rdf-connect/ldes2sparql
 ```

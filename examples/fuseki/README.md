@@ -34,10 +34,10 @@ MATERIALIZE=true
 
 ### SPARQL ingest variables
 SPARQL_ENDPOINT=http://{YOUR_LOCAL_IP}:3030/marine-regions/update
-TARGET_GRAPH=https://www.marineregions.org/graph # For Oxigraph a named graph is optional
+TARGET_GRAPH=https://www.marineregions.org/graph # For Fuseki a named graph is optional
 MAX_QUERY_LENGTH=10000 # A high number as it optimizes write performance
 ```
 3. Execute the pipeline with the following Docker command:
 ```bash
-docker run --env-file conf.env ldes2sparql
+docker run --env-file conf.env ghcr.io/rdf-connect/ldes2sparql
 ```
