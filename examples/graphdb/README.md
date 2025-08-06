@@ -6,7 +6,7 @@ In this example we show how to replicate and materialize the (mirrored) [Marine 
 
 We rely on the [official Docker image of GraphDB](https://hub.docker.com/r/ontotext/graphdb).
 
-Starting v11, GraphDB requires a license key, even for their free version. This licese can be requested on [their website](https://www.ontotext.com/products/graphdb/). Once a license has been obtained, follow these steps to spin up a GraphDB instance:
+Starting v11, GraphDB requires a license key, even for their free version. This license can be requested on [their website](https://www.ontotext.com/products/graphdb/). Once a license has been obtained, follow these steps to spin up a GraphDB instance:
 
 1. Pull the lastest image (at the time of writing this was v11.0.2):
 ```bash
