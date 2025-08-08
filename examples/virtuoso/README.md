@@ -6,37 +6,17 @@ In this example we show how to replicate and materialize the (mirrored) [Marine 
 
 We rely on the official [Virtuoso Docker image](https://hub.docker.com/r/openlink/virtuoso-opensource-7/). 
 
-Make sure to provide enough memory resources via the [`NumberOfBuffers`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/virtuoso.ini#L95) and [`MaxDirtyBuffers`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/virtuoso.ini#L96) properties in the [`virtuoso.ini`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/virtuoso.ini) configuration file. The performance of SPARQL UPDATE queries largely depends on the given memory.
-
-
 Run the following commands to spin up a Virtuoso instance:
 
 1. Pull the latest Virtuoso image:
 ```bash
-docker pull openlink/virtuoso-opensource-7
+docker pull openlink/virtuoso-opensource-7:latest
 ```
-2. Start up a Virtuoso instance:
+2. Start up a Virtuoso instance. Adjust the `VIRT_PARAMETERS_NumberOfBuffers` and `VIRT_PARAMETERS_MaxDirtyBuffer` environment variables to set the amount of memory Virtuoso is allowed to use:
 ```bash
-docker run --name virtuoso --env DBA_PASSWORD=YOUR_PWD -p 1111:1111 -p 8890:8890 -v `pwd`:/database -it openlink/virtuoso-opensource-7:latest
+docker run --name virtuoso --env DBA_PASSWORD=YOUR_PWD -p 1111:1111 -p 8890:8890 -v `pwd`:/database -v `pwd`/initdb.d:/initdb.d -it -e VIRT_PARAMETERS_NumberOfBuffers=2720000 -e VIRT_PARAMETERS_MaxDirtyBuffers=2000000 openlink/virtuoso-opensource-7:latest
 ```
-
-### Enable SPARQL UPDATE on Virtuoso
-
-By default, SPARQL UDPATE queries are not allowed in Virtuoso. To enable them, follow these steps:
-
-**⚠️Warning⚠️**: For this example, we allow full unrestricted SPARQL UPDATE permission over all named graphs. However, for production deployments, proper security and access control configurations should be made. See [the documentation](https://docs.openlinksw.com/virtuoso/rdfsparqlprotocolendpoint/#rdfsupportedprotocolendpointurisparqlauthex) for Virtuoso.
-
-1. Login with your `dba` credential on `http://localhost:8890/conductor`.
-
-2. Navigate to `Database` > `Interactive SQL`.
-
-3. Execute the following command to authorize update operations for all named graphs:
-
-   ```SQL
-    DB.DBA.RDF_DEFAULT_USER_PERMS_SET ('nobody', 7);
-   ```
-
-4. Navigate to `System Admin` > `User Accounts` > `Users` and edit the `SPARQL` user. Add the `SPARQ_UPDATE` account role and click on save.
+SPARQL UPDATE queries are disallowed by default in Virtuoso, but we enable them with the [`initdb.d/enable_update.sql`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/initdb.d/enable_update.sql) script. This script grants update permissions to the default `SPARQL` user and allows unrestricted access to all named graphs. 
 
 ## Execute ldes2sparql
 

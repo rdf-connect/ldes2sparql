@@ -2,6 +2,7 @@
 FROM node:lts-alpine
 # Create the folder for keeping the state
 RUN mkdir -p /state
+RUN mkdir -p /performance
 # Set current working directory
 WORKDIR /rdfc-pipeline
 # Copy configuration files
