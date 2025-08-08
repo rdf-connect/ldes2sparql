@@ -54,7 +54,7 @@
     ];
     js:after [
         a rdfl:EnvVariable;
-        rdfl:envDefault "-5000-01-01T00:00:00.000Z"^^xsd:dateTime;
+        rdfl:envDefault "0000-01-01T00:00:00.000Z"^^xsd:dateTime;
         rdfl:envKey "AFTER"
     ];
     js:materialize [
@@ -97,5 +97,13 @@
             rdfl:envDefault "500"^^xsd:integer;
             rdfl:envKey "MAX_QUERY_LENGTH"
         ];
-        js:accessToken "${ACCESS_TOKEN}" # Required for Qlever
+        js:accessToken "${ACCESS_TOKEN}"; # Required for Qlever
+        js:measurePerformance [
+            js:name [
+                a rdfl:EnvVariable;
+                rdfl:envDefault "response-times";
+                rdfl:envKey "PERF_NAME"
+            ];
+            js:outputPath </performance>
+        ]
     ].

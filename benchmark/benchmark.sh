@@ -24,6 +24,7 @@ echo "Benchmarking Apache Jena Fuseki..."
 
 if [ ! -d "fuseki" ]; then
     mkdir fuseki
+    chmod 777 fuseki
 fi
 cd fuseki
 # Build Jena Fuseki Docker image
@@ -45,7 +46,10 @@ hyperfine --runs 5 --export-markdown ../results/fuseki.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${FUSEKI_URL} \
         -e MAX_QUERY_LENGHT=10000 \
+        -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
+        -e PERF_NAME=fuseki \
+        -v `pwd`/results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the Fuseki and clean up
@@ -60,11 +64,13 @@ echo "Benchmarking GraphDB..."
 
 if [ ! -d "graphdb" ]; then
     mkdir graphdb
+    chmod 777 graphdb
 fi
 cd graphdb
 # Build GraphDB Docker image
 if [ ! -d "conf" ]; then
     mkdir conf
+    chmod 777 conf
 fi
 
 # Check if the license file exists
@@ -93,7 +99,10 @@ hyperfine --runs 5 --export-markdown ../results/graphdb.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${GRAPHDB_URL} \
         -e MAX_QUERY_LENGHT=10000 \
+        -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
+        -e PERF_NAME=graphdb \
+        -v `pwd`/results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the GraphDB and clean up
@@ -108,6 +117,7 @@ echo "Benchmarking Oxigraph..."
 
 if [ ! -d "oxigraph" ]; then
     mkdir oxigraph
+    chmod 777 oxigraph
 fi
 cd oxigraph
 
@@ -128,7 +138,10 @@ hyperfine --runs 5 --export-markdown ../results/oxigraph.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${OXIGRAPH_URL} \
         -e MAX_QUERY_LENGHT=10000 \
+        -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
+        -e PERF_NAME=oxigraph \
+        -v `pwd`/results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the Oxigraph and clean up
@@ -143,6 +156,7 @@ echo "Benchmarking qEndpoint..."
 
 if [ ! -d "qendpoint" ]; then
     mkdir qendpoint
+    chmod 777 qendpoint
 fi
 cd qendpoint
 
@@ -162,7 +176,10 @@ hyperfine --runs 5 --export-markdown ../results/qendpoint.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${QENDPOINT_URL} \
         -e MAX_QUERY_LENGHT=10000 \
+        -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
+        -e PERF_NAME=qendpoint \
+        -v `pwd`/results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the qEndpoint and clean up
@@ -177,6 +194,7 @@ echo "Benchmarking Qlever..."
 
 if [ ! -d "qlever" ]; then
     mkdir qlever
+    chmod 777 qlever
 fi
 cd qlever
 
@@ -205,7 +223,10 @@ hyperfine --runs 5 --export-markdown ../results/qlever.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${QLEVER_URL} \
         -e MAX_QUERY_LENGHT=10000 \
+        -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
+        -e PERF_NAME=qlever \
+        -v `pwd`/results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the Qlever and clean up
@@ -220,6 +241,7 @@ echo "Benchmarking Virtuoso Open Source..."
 
 if [ ! -d "virtuoso" ]; then
     mkdir virtuoso
+    chmod 777 virtuoso
 fi
 cd virtuoso
 
@@ -227,6 +249,7 @@ cd virtuoso
 sudo docker pull openlink/virtuoso-opensource-7:latest
 # Prepare start up commands to enable SPARQL UPDATE queries
 mkdir initdb.d
+chmod 777 initdb.d
 cp ../../examples/virtuoso/initdb.d/* initdb.d/
 # Run the Virtuoso server
 sudo docker run -d --rm --name virtuoso --env DBA_PASSWORD=dba -p 1111:1111 -p 8890:8890 -v `pwd`:/database \
@@ -247,7 +270,10 @@ hyperfine --runs 5 --export-markdown ../results/virtuoso.md \
         -e SPARQL_ENDPOINT=${VIRTUOSO_URL} \
         -e TARGET_GRAPH=https://www.marineregions.org/graph \
         -e MAX_QUERY_LENGHT=500 \
+        -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= \
+        -e PERF_NAME=virtuoso \
+        -v `pwd`/results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the Virtuoso and clean up
