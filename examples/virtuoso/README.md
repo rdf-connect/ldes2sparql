@@ -12,9 +12,9 @@ Run the following commands to spin up a Virtuoso instance:
 ```bash
 docker pull openlink/virtuoso-opensource-7:latest
 ```
-2. Start up a Virtuoso instance. Adjust the `VIRT_PARAMETERS_NumberOfBuffers` and `VIRT_PARAMETERS_MaxDirtyBuffer` environment variables to set the amount of memory Virtuoso is allowed to use:
+2. Start up a Virtuoso instance. Adjust the `VIRT_PARAMETERS_NumberOfBuffers` and `VIRT_PARAMETERS_MaxDirtyBuffer` environment variables to set the maximum amount of memory Virtuoso is allowed to use ([see here](https://vos.openlinksw.com/owiki/wiki/VOS/VirtRDFPerformanceTuning) for reference values). Memory limits significantly impact update query performance in Virtuoso. Also use `VIRT_SPARQL_ResultSetMaxRows`, `VIRT_SPARQL_MaxConstructTriples`, `VIRT_SPARQL_MaxQueryCostEstimationTime` and `VIRT_SPARQL_MaxQueryExecutionTime` to increase the query processing limits and the increase/disable the query execution time limit: 
 ```bash
-docker run --name virtuoso --env DBA_PASSWORD=YOUR_PWD -p 1111:1111 -p 8890:8890 -v `pwd`:/database -v `pwd`/initdb.d:/initdb.d -it -e VIRT_PARAMETERS_NumberOfBuffers=2720000 -e VIRT_PARAMETERS_MaxDirtyBuffers=2000000 openlink/virtuoso-opensource-7:latest
+docker run --name virtuoso --env DBA_PASSWORD=YOUR_PWD -p 1111:1111 -p 8890:8890 -v `pwd`:/database -v `pwd`/initdb.d:/initdb.d -it -e VIRT_PARAMETERS_NumberOfBuffers=2720000 -e VIRT_PARAMETERS_MaxDirtyBuffers=2000000 -e VIRT_SPARQL_ResultSetMaxRows=10000000 -e VIRT_SPARQL_MaxConstructTriples=10000000 -e VIRT_SPARQL_MaxQueryExecutionTime=0 -e VIRT_SPARQL_MaxQueryCostEstimationTime=0 openlink/virtuoso-opensource-7:latest
 ```
 SPARQL UPDATE queries are disallowed by default in Virtuoso, but we enable them with the [`initdb.d/enable_update.sql`](https://github.com/rdf-connect/ldes2sparql/blob/main/examples/virtuoso/initdb.d/enable_update.sql) script. This script grants update permissions to the default `SPARQL` user and allows unrestricted access to all named graphs. 
 
@@ -38,7 +38,7 @@ MATERIALIZE=true
 ### SPARQL ingest variables
 SPARQL_ENDPOINT=http://{YOUR_LOCAL_IP}:8890/sparql
 TARGET_GRAPH=https://www.marineregions.org/graph # For Virtuoso a named graph is mandatory
-MAX_QUERY_LENGTH=500 # A low number to avoid Virtuoso hard query limits
+FOR_VIRTUOSO=true # Indicate that big queries need to be splitted
 ```
 3. Execute the pipeline with the following Docker command:
 ```bash

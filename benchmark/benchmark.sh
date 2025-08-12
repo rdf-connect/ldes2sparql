@@ -45,11 +45,10 @@ hyperfine --runs 5 --export-markdown ../results/fuseki.md \
         -e LDES=http://193.190.127.143:8080/marine-regions-mirror/ldes \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${FUSEKI_URL} \
-        -e MAX_QUERY_LENGHT=10000 \
         -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
         -e PERF_NAME=fuseki \
-        -v `pwd`/results:/performance \
+        -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the Fuseki and clean up
@@ -98,11 +97,10 @@ hyperfine --runs 5 --export-markdown ../results/graphdb.md \
         -e LDES=http://193.190.127.143:8080/marine-regions-mirror/ldes \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${GRAPHDB_URL} \
-        -e MAX_QUERY_LENGHT=10000 \
         -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
         -e PERF_NAME=graphdb \
-        -v `pwd`/results:/performance \
+        -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the GraphDB and clean up
@@ -137,11 +135,10 @@ hyperfine --runs 5 --export-markdown ../results/oxigraph.md \
         -e LDES=http://193.190.127.143:8080/marine-regions-mirror/ldes \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${OXIGRAPH_URL} \
-        -e MAX_QUERY_LENGHT=10000 \
         -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
         -e PERF_NAME=oxigraph \
-        -v `pwd`/results:/performance \
+        -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the Oxigraph and clean up
@@ -175,11 +172,10 @@ hyperfine --runs 5 --export-markdown ../results/qendpoint.md \
         -e LDES=http://193.190.127.143:8080/marine-regions-mirror/ldes \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${QENDPOINT_URL} \
-        -e MAX_QUERY_LENGHT=10000 \
         -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
         -e PERF_NAME=qendpoint \
-        -v `pwd`/results:/performance \
+        -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the qEndpoint and clean up
@@ -222,11 +218,10 @@ hyperfine --runs 5 --export-markdown ../results/qlever.md \
         -e LDES=http://193.190.127.143:8080/marine-regions-mirror/ldes \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${QLEVER_URL} \
-        -e MAX_QUERY_LENGHT=10000 \
         -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
         -e PERF_NAME=qlever \
-        -v `pwd`/results:/performance \
+        -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the Qlever and clean up
@@ -252,9 +247,12 @@ mkdir initdb.d
 chmod 777 initdb.d
 cp ../../examples/virtuoso/initdb.d/* initdb.d/
 # Run the Virtuoso server
-sudo docker run -d --rm --name virtuoso --env DBA_PASSWORD=dba -p 1111:1111 -p 8890:8890 -v `pwd`:/database \
-    -v `pwd`/initdb.d:/initdb.d -it -e VIRT_PARAMETERS_NumberOfBuffers=2720000 \
-    -e VIRT_PARAMETERS_MaxDirtyBuffers=2000000 openlink/virtuoso-opensource-7:latest
+sudo docker run -d --rm --name virtuoso --env DBA_PASSWORD=dba -p 1111:1111 -p 8890:8890 \
+    -v `pwd`:/database -v `pwd`/initdb.d:/initdb.d -it \
+    -e VIRT_PARAMETERS_NumberOfBuffers=2720000 -e VIRT_PARAMETERS_MaxDirtyBuffers=2000000 \
+    -e VIRT_SPARQL_ResultSetMaxRows=10000000 -e VIRT_SPARQL_MaxConstructTriples=10000000 \
+    -e VIRT_SPARQL_MaxQueryExecutionTime=0 -e VIRT_SPARQL_MaxQueryCostEstimationTime=0 \
+    openlink/virtuoso-opensource-7:latest
 # Run the Virtuoso server
 echo "Waiting for Virtuoso to start..."
 sleep 45
@@ -269,11 +267,11 @@ hyperfine --runs 5 --export-markdown ../results/virtuoso.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${VIRTUOSO_URL} \
         -e TARGET_GRAPH=https://www.marineregions.org/graph \
-        -e MAX_QUERY_LENGHT=500 \
+        -e FOR_VIRTUOSO=true \
         -e AFTER=0000-01-01T00:00:00.000Z \
         -e SHAPE= \
         -e PERF_NAME=virtuoso \
-        -v `pwd`/results:/performance \
+        -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
 # Stop the Virtuoso and clean up

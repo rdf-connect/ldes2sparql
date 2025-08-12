@@ -26,7 +26,7 @@ docker run \
 -e "AFTER=2024-12-31T23:59:59.999Z" (optional)\
 -e "BEFORE=2026-01-01T00:00:00.000Z" (optional)\
 -e "SHAPE=https://my.dereferenceable.shape" (optional)\
--e "MAX_QUERY_LENGTH=500" (optional)\
+-e "FOR_VIRTUOSO=true" (optional)\
 -e "ACCESS_TOKEN=marine-regions_1234" (optional)\
 -e "PERF_NAME=virtuoso" (optional) \
 -v /your/state/folder:/state \
@@ -54,7 +54,7 @@ A descritpion of all available environment variables is presented next:performan
 - **`BEFORE`** (optional): Datetime property that instructs the client to only emit memebers timestamped before (exclusive) the given datetime.
 - **`SHAPE`** (optional): URL of a SHACL shape that the LDES client will use to guide the [member extraction process](https://github.com/TREEcg/extract-cbd-shape) to, for example, emit members with property subsets or include out-of-band (i.e., externally linked) property values. Alternatively, a local shape file may be used, but this requires the Docker image of `ldes2sparql` to be rebuilt including such shape file.
 - **`CONCURRENT_FETCHES`** (optional): Maximum number of concurrent HTTP requests that the LDES client may perform while replicating the LDES. For some LDES, this needs to be limited to avoid, for example, `HTTP 429 Too many requests` responses. 
-- **`MAX_QUERY_LENGHT`** (optional): Property that indicates the maximum number of triples allowed in INSERT DATA SPARQL queries, before splitting the query into multiple ones. This is useful to workaround hard query length limits, as [is the case for Virtuoso](https://github.com/openlink/virtuoso-opensource/blob/develop/7/libsrc/Wi/sparql2sql.h#L1031).
+- **`FOR_VIRTUOSO`** (optional): Property to indicate that the target SPARQL graph store is a Virtuso instance, which then splits large INSERT DATA queries, to avoid Virtuoso's hard limits such as the [max SQL query length](https://github.com/openlink/virtuoso-opensource/blob/develop/7/libsrc/Wi/sparql2sql.h#L1031) and the [max query vector size](https://community.openlinksw.com/t/virtuosoexception-sq199/1950).
 - **`ACCESS_TOKEN`** (optional): Security property that is required to [enable SPARQL UPDATE queries in Qlever](https://github.com/ad-freiburg/qlever/blob/41864b6cc95e167e098ee7466af37ccc8a925723/src/engine/Server.cpp#L497).
 - **`PERF_NAME`** (optional): Name of the file that will be use to record the individual request times for benchmarking purposes.
 

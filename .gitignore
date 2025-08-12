@@ -1,6 +1,7 @@
 node_modules
 state
 conf2.env
+pipeline-test.ttl
 # Virtuoso
 examples/virtuoso/virtuoso.db
 examples/virtuoso/virtuoso.log
@@ -8,6 +9,9 @@ examples/virtuoso/virtuoso-temp.db
 examples/virtuoso/virtuoso.lck
 examples/virtuoso/virtuoso.pxa
 examples/virtuoso/virtuoso.trx
+examples/virtuoso/virtuoso.ini
+examples/virtuoso/virtuoso.crt
+examples/virtuoso/virtuoso.key
 # Oxigraph
 examples/oxigraph/*.log
 examples/oxigraph/*.sst
