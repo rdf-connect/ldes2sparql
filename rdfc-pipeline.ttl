@@ -92,10 +92,10 @@
             rdfl:envDefault "${SPARQL_ENDPOINT}";
             rdfl:envKey "SPARQL_ENDPOINT"
         ];
-        js:maxQueryLength [ # Maximum numer of BGPs allowed in a single INSERT DATA query
+        js:forVirtuoso [ # Handle Virtuoso-specific case of query splitting due to size limits
             a rdfl:EnvVariable;
-            rdfl:envDefault "500"^^xsd:integer;
-            rdfl:envKey "MAX_QUERY_LENGTH"
+            rdfl:envDefault "false"^^xsd:boolean;
+            rdfl:envKey "FOR_VIRTUOSO"
         ];
         js:accessToken "${ACCESS_TOKEN}"; # Required for Qlever
         js:measurePerformance [
