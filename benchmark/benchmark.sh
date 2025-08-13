@@ -15,7 +15,7 @@ sudo docker pull ghcr.io/rdf-connect/ldes2sparql:latest
 # Get the local IP address
 LOCAL_IP=$(hostname -I | awk '{print $1}')
 # Java memory settings
-JAVA_HEAP=8192m
+JAVA_HEAP=60000m
 
 #########################################
 ###   Benchmark Apache Jena Fuseki    ###
@@ -46,8 +46,11 @@ hyperfine --runs 5 --export-markdown ../results/fuseki.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${FUSEKI_URL} \
         -e AFTER=0000-01-01T00:00:00.000Z \
+        -e BEFORE=2025-08-14T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
         -e PERF_NAME=fuseki \
+        -e FAILURE_IS_FATAL=false \
+        -e QUERY_TIMEOUT=30 \
         -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
@@ -98,8 +101,11 @@ hyperfine --runs 5 --export-markdown ../results/graphdb.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${GRAPHDB_URL} \
         -e AFTER=0000-01-01T00:00:00.000Z \
+        -e BEFORE=2025-08-14T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
         -e PERF_NAME=graphdb \
+        -e FAILURE_IS_FATAL=false \
+        -e QUERY_TIMEOUT=30 \
         -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
@@ -136,8 +142,11 @@ hyperfine --runs 5 --export-markdown ../results/oxigraph.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${OXIGRAPH_URL} \
         -e AFTER=0000-01-01T00:00:00.000Z \
+        -e BEFORE=2025-08-14T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
         -e PERF_NAME=oxigraph \
+        -e FAILURE_IS_FATAL=false \
+        -e QUERY_TIMEOUT=30 \
         -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
@@ -159,7 +168,7 @@ cd qendpoint
 
 # Pull and run the qEndpoint Docker image
 sudo docker pull qacompany/qendpoint:latest
-sudo docker run --rm -d -p 1234:1234 --name qendpoint --env MEM_SIZE=8G qacompany/qendpoint
+sudo docker run --rm -d -p 1234:1234 --name qendpoint --env MEM_SIZE=$JAVA_HEAP qacompany/qendpoint
 echo "Waiting for qEndpoint to start..."
 sleep 10
 
@@ -173,8 +182,11 @@ hyperfine --runs 5 --export-markdown ../results/qendpoint.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${QENDPOINT_URL} \
         -e AFTER=0000-01-01T00:00:00.000Z \
+        -e BEFORE=2025-08-14T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
         -e PERF_NAME=qendpoint \
+        -e FAILURE_IS_FATAL=false \
+        -e QUERY_TIMEOUT=30 \
         -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
@@ -204,7 +216,7 @@ sudo docker run -u $(id -u):$(id -g) --rm -v /etc/localtime:/etc/localtime:ro \
 # Run the Qlever server
 sudo docker run -d -u $(id -u):$(id -g) --rm -v /etc/localtime:/etc/localtime:ro -v $(pwd):/index -p 7000:7000 \
     -w /index --init --entrypoint bash --name qlever adfreiburg/qlever \
-    -c 'ServerMain -i marine-regions -j 4 -p 7000 -m 8G -c 4G -e 4G -k 200 -s 30s -a marine-regions_1234'
+    -c 'ServerMain -i marine-regions -j 4 -p 7000 -m 60G -c 4G -e 4G -k 200 -s 30s -a marine-regions_1234'
 echo "Waiting for Qlever to start..."
 sleep 10
 
@@ -219,8 +231,11 @@ hyperfine --runs 5 --export-markdown ../results/qlever.md \
         -e MATERIALIZE=true \
         -e SPARQL_ENDPOINT=${QLEVER_URL} \
         -e AFTER=0000-01-01T00:00:00.000Z \
+        -e BEFORE=2025-08-14T00:00:00.000Z \
         -e SHAPE= -e TARGET_GRAPH= \
         -e PERF_NAME=qlever \
+        -e FAILURE_IS_FATAL=false \
+        -e QUERY_TIMEOUT=30 \
         -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
@@ -249,7 +264,7 @@ cp ../../examples/virtuoso/initdb.d/* initdb.d/
 # Run the Virtuoso server
 sudo docker run -d --rm --name virtuoso --env DBA_PASSWORD=dba -p 1111:1111 -p 8890:8890 \
     -v `pwd`:/database -v `pwd`/initdb.d:/initdb.d -it \
-    -e VIRT_PARAMETERS_NumberOfBuffers=2720000 -e VIRT_PARAMETERS_MaxDirtyBuffers=2000000 \
+    -e VIRT_PARAMETERS_NumberOfBuffers=7500000 -e VIRT_PARAMETERS_MaxDirtyBuffers=5625000 \
     -e VIRT_SPARQL_ResultSetMaxRows=10000000 -e VIRT_SPARQL_MaxConstructTriples=10000000 \
     -e VIRT_SPARQL_MaxQueryExecutionTime=0 -e VIRT_SPARQL_MaxQueryCostEstimationTime=0 \
     openlink/virtuoso-opensource-7:latest
@@ -269,8 +284,11 @@ hyperfine --runs 5 --export-markdown ../results/virtuoso.md \
         -e TARGET_GRAPH=https://www.marineregions.org/graph \
         -e FOR_VIRTUOSO=true \
         -e AFTER=0000-01-01T00:00:00.000Z \
+        -e BEFORE=2025-08-14T00:00:00.000Z \
         -e SHAPE= \
         -e PERF_NAME=virtuoso \
+        -e FAILURE_IS_FATAL=false \
+        -e QUERY_TIMEOUT=30 \
         -v `pwd`/../results:/performance \
         ghcr.io/rdf-connect/ldes2sparql"
 
