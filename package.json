@@ -1,6 +1,6 @@
 {
   "name": "@rdfc/ldes2sparql",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "type": "module",
   "dependencies": {
     "@rdfc/js-runner": "^1.0.0",
