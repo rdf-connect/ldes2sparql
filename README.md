@@ -60,4 +60,9 @@ A descritpion of all available environment variables is presented next:performan
 
 ## Benchmarks
 
-TODO
+We run some benchmarks using `ldes2sparql` to fully replicate the [Marine Regions (mirror) LDES](http://193.190.127.143:8080/marine-regions-mirror/ldes) into different open source SPARQL graph stores.
+
+We measured the mean time that took `ldes2sparql` to fully replicate the LDES into the target SPARQL store and also the individual request times. The benchmarks were run using Dockerized components (i.e., every graph store and the ldes2sparql pipeline run in their own Docker containers) in a server having a `1x6 core Intel Core i5-9500 CPU (3.00GHz)` and `32GB of RAM`. At the time of running, the LDES contained a total of `65xxx members`, which materialized into a knowledge graph having `800K triples`. The benchmarks were executed using the [`hyperfine`](https://github.com/sharkdp/hyperfine) tool.
+
+### 
+
