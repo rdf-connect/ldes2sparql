@@ -5,7 +5,7 @@
       "name": "@rdfc/ldes2sparql",
       "dependencies": {
         "@rdfc/js-runner": "^1.0.0",
-        "@rdfc/sparql-ingest-processor-ts": "^0.4.9",
+        "@rdfc/sparql-ingest-processor-ts": "^0.5.1",
         "ldes-client": "^0.1.8",
       },
     },
@@ -99,7 +99,7 @@
 
     "@rdfc/js-runner": ["@rdfc/js-runner@1.0.0", "", { "dependencies": { "@rdfjs/types": "^2.0.1", "@treecg/types": "^0.4.6", "command-line-args": "^6.0.1", "command-line-usage": "^7.0.3", "debug": "^4.4.0", "kafkajs": "^2.2.4", "n3": "^1.23.1", "rdf-lens": "^1.3.3", "stream-to-array": "^2.3.0", "ws": "^8.18.0" }, "bin": { "js-runner": "bin/js-runner.js" } }, "sha512-9lC2XdL+Nd5icFgdXQ9hBiEQNHpZvVz3mRHW6GBvX4z84IvF2hjUkesFgFOr++EfAS7Ph1LDR7RdMHGKXQDwjw=="],
 
-    "@rdfc/sparql-ingest-processor-ts": ["@rdfc/sparql-ingest-processor-ts@0.4.9", "", { "dependencies": { "@treecg/types": "^0.4.6", "n3": "^1.26.0", "rdf-data-factory": "^2.0.2", "rdf-stores": "^2.1.1", "undici": "^7.13.0", "winston": "^3.17.0" } }, "sha512-ZeSR13ERg70bkYztm7WwkFjG7BDXsfoQRSrSXbglWV6QGJznCPj8WlZRMEcgVHsmnTPQIulz9bQwmE6foIzNmQ=="],
+    "@rdfc/sparql-ingest-processor-ts": ["@rdfc/sparql-ingest-processor-ts@0.5.1", "", { "dependencies": { "@treecg/types": "^0.4.6", "n3": "^1.26.0", "rdf-data-factory": "^2.0.2", "rdf-stores": "^2.1.1", "undici": "^7.13.0", "winston": "^3.17.0" } }, "sha512-6kkfuVHS4lC3EGGyQkf0OtuMAt6eq7kkDdoQGux57CTECmQ0WRwBk6ZCiFj4IIam+5poBq5es3Pg9NmoyGEChQ=="],
 
     "@rdfjs/types": ["@rdfjs/types@2.0.1", "", { "dependencies": { "@types/node": "*" } }, "sha512-uyAzpugX7KekAXAHq26m3JlUIZJOC0uSBhpnefGV5i15bevDyyejoB7I+9MKeUrzXD8OOUI3+4FeV1wwQr5ihA=="],
 

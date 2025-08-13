@@ -29,6 +29,8 @@ docker run \
 -e "FOR_VIRTUOSO=true" (optional)\
 -e "ACCESS_TOKEN=marine-regions_1234" (optional)\
 -e "PERF_NAME=virtuoso" (optional) \
+-e "FAILURE_IS_FATAL[true|false]" (optional) \
+-e "QUERY_TIMEOUT=30" (optional) \
 -v /your/state/folder:/state \
 -v /your/benchmark/folder:/performance \
 ghcr.io/rdf-connect/ldes2sparql:latest
@@ -57,7 +59,19 @@ A descritpion of all available environment variables is presented next:performan
 - **`FOR_VIRTUOSO`** (optional): Property to indicate that the target SPARQL graph store is a Virtuso instance, which then splits large INSERT DATA queries, to avoid Virtuoso's hard limits such as the [max SQL query length](https://github.com/openlink/virtuoso-opensource/blob/develop/7/libsrc/Wi/sparql2sql.h#L1031) and the [max query vector size](https://community.openlinksw.com/t/virtuosoexception-sq199/1950).
 - **`ACCESS_TOKEN`** (optional): Security property that is required to [enable SPARQL UPDATE queries in Qlever](https://github.com/ad-freiburg/qlever/blob/41864b6cc95e167e098ee7466af37ccc8a925723/src/engine/Server.cpp#L497).
 - **`PERF_NAME`** (optional): Name of the file that will be use to record the individual request times for benchmarking purposes.
+- **`FAILURE_IS_FATAL`** (optional): Indicates whether the pipeline execution is fully stopped when a query does not succeed.
+- **`QUERY_TIMEOUT`** (optional): Maximum time in seconds that is allowed for a query to be resolved. If the time is exceeded, an error will be thrown. If not specified, a default timeout of 30 mins will be set. 
 
 ## Benchmarks
 
-TODO
+We run some benchmarks using `ldes2sparql` to fully replicate the [Marine Regions (mirror) LDES](http://193.190.127.143:8080/marine-regions-mirror/ldes) into different open source SPARQL graph stores.
+
+We measured the mean time that took `ldes2sparql` to fully replicate the LDES into the target SPARQL store and also the individual request times. The benchmarks were run using Dockerized components (i.e., every graph store and the ldes2sparql pipeline run in their own Docker containers) in a server having: 
+- `1x6 core Intel Core i5-9500 CPU (3.00GHz)`
+- `60GB of RAM`
+- TODO: type of disk 
+
+At the time of running, the LDES contained a total of `64369 members`, which materialized into a knowledge graph having `TODO triples`. The benchmarks were executed using the [`hyperfine`](https://github.com/sharkdp/hyperfine) tool.
+
+
+

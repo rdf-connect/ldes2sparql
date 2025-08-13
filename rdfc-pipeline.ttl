@@ -104,6 +104,16 @@
                 rdfl:envDefault "response-times";
                 rdfl:envKey "PERF_NAME"
             ];
-            js:outputPath </performance>
+            js:outputPath </performance>;
+            js:failureIsFatal [
+                a rdfl:EnvVariable;
+                rdfl:envDefault "true"^^xsd:boolean;
+                rdfl:envKey "FAILURE_IS_FATAL"
+            ];
+            js:queryTimeout [
+                a rdfl:EnvVariable;
+                rdfl:envDefault "1800"^^xsd:integer; # 30 minutes
+                rdfl:envKey "QUERY_TIMEOUT"
+            ]
         ]
     ].
