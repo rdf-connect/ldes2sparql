@@ -66,12 +66,19 @@ A descritpion of all available environment variables is presented next:performan
 
 We run some benchmarks using `ldes2sparql` to fully replicate the [Marine Regions (mirror) LDES](http://193.190.127.143:8080/marine-regions-mirror/ldes) into different open source SPARQL graph stores.
 
-We measured the mean time that took `ldes2sparql` to fully replicate the LDES into the target SPARQL store and also the individual request times. The benchmarks were run using Dockerized components (i.e., every graph store and the ldes2sparql pipeline run in their own Docker containers) in a server having: 
+We measured the time that took `ldes2sparql` to fully replicate the LDES into the target SPARQL store and also the individual request times, having a `timeout of 30 seconds` per request. The benchmarks were run using Dockerized components (i.e., every graph store and the ldes2sparql pipeline run in their own Docker containers) in a server having: 
 - `1x6 core Intel Core i5-9500 CPU (3.00GHz)`
-- `60GB of RAM`
-- TODO: type of disk 
+- `64GB of RAM` (with 60GB allocated to the SPARQL engines) 
+- `512GB Western Digital TM PC SN810 NVMeTM SSD`
 
-At the time of running, the LDES contained a total of `64369 members`, which materialized into a knowledge graph having `TODO triples`. The benchmarks were executed using the [`hyperfine`](https://github.com/sharkdp/hyperfine) tool.
+For reproducibility we set datetime constraints to the LDES replication process, instructing the LDES client to replicate all members before `2025-08-14T00:00:00.000Z`, which results in a total of `64369 members`, that are then materialized (i.e., we end up with the latest version of every member) into a knowledge graph having `749862 triples` in total. The benchmarks were executed using the [`hyperfine`](https://github.com/sharkdp/hyperfine) tool.
 
-
-
+**Table 1.** Total execution time for a full LDES replication.
+| SPARQL engine | Total time [s] | Timeouts |
+|:---|---:|---:|
+| Apache Jena Fuseki | 5653.153 | 0 |
+| GraphDB | 1080.582 | 0 |
+| Oxigraph | 355.631 | 0 |
+| Qendpoint | 20055.339 | 330 |
+| Qlever | 302825.197 | 0 |
+| Virtuoso | **334.591** | 0 |

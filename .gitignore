@@ -2,6 +2,7 @@ node_modules
 state
 conf2.env
 pipeline-test.ttl
+benchmark/venv
 # Virtuoso
 examples/virtuoso/virtuoso.db
 examples/virtuoso/virtuoso.log

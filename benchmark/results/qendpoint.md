@@ -1,0 +1,3 @@
+| Command | Mean [s] | Min [s] | Max [s] | Relative |
+|:---|---:|---:|---:|---:|
+| `sudo docker run --rm         -e LDES=http://193.190.127.143:8080/marine-regions-mirror/ldes         -e MATERIALIZE=true         -e SPARQL_ENDPOINT=http://10.2.64.222:1234/api/endpoint/sparql         -e AFTER=0000-01-01T00:00:00.000Z         -e BEFORE=2025-08-14T00:00:00.000Z         -e SHAPE= -e TARGET_GRAPH=         -e PERF_NAME=qendpoint         -e FAILURE_IS_FATAL=false         -e QUERY_TIMEOUT=30         -v /users/jrojasme/ldes2sparql/benchmark/qendpoint/../results:/performance         ghcr.io/rdf-connect/ldes2sparql` | 20055.339 | 20055.339 | 20055.339 | 1.00 |
