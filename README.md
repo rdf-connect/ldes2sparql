@@ -71,7 +71,7 @@ We measured the time that took `ldes2sparql` to fully replicate the LDES into th
 - `64GB of RAM` (with 60GB allocated to the SPARQL engines) 
 - `512GB Western Digital TM PC SN810 NVMeTM SSD`
 
-For reproducibility we set datetime constraints to the LDES replication process, instructing the LDES client to replicate all members before `2025-08-14T00:00:00.000Z`, which results in a total of `64369 members`, that are then materialized (i.e., we end up with the latest version of every member) into a knowledge graph having `749862 triples` in total. The benchmarks were executed using the [`hyperfine`](https://github.com/sharkdp/hyperfine) tool.
+For reproducibility we set datetime constraints to the LDES replication process, instructing the LDES client to replicate all members before `2025-08-14T00:00:00.000Z`, which results in a total of `64369 members`, that are then materialized (i.e., we end up with the latest version of every member) into a knowledge graph having `749862 triples` in total. We don't set a target named graph for the ingestion queries, mainly because [qEndpoint does not support named graphs in its docker version](https://github.com/the-qa-company/qEndpoint/issues/616), with the exception of Virtuoso for which is mandatory to set a target named graph. The benchmarks were executed using the [`hyperfine`](https://github.com/sharkdp/hyperfine) tool with the [script available in this repository](https://github.com/rdf-connect/ldes2sparql/blob/main/benchmark/benchmark.sh).
 
 **Table 1.** Total execution time for a full LDES replication.
 | SPARQL engine | Total time [s] | Timeouts |
@@ -79,6 +79,16 @@ For reproducibility we set datetime constraints to the LDES replication process,
 | Apache Jena Fuseki | 5653.153 | 0 |
 | GraphDB | 1080.582 | 0 |
 | Oxigraph | 355.631 | 0 |
-| Qendpoint | 20055.339 | 330 |
+| qEndpoint | 17039.606 | 264 |
 | Qlever | 302825.197 | 0 |
 | Virtuoso | **334.591** | 0 |
+
+In Table 1 we see the results of our benchmark, where Virtuoso registers the fastest overall ingestion time with a total of 334.591s. Oxigraph comes at a close second place, followed by GraphDB, Fuseki, qEndpoint and Qlever. qEndpoint is the only graph store that produced request timeouts with 264 and a total time of 17039.606s, and although it didn't have timeouts, Qlever total ingestion time was by far the longest with 302825.197s (around three and a half days).
+
+![query-response distribution](benchmark/boxplot.svg)
+**Figure 1.** Update query response time distribution.
+
+In Figure 1 we can observe the distribution of response times of every update SPARQL query, executed to ingest each of the LDES members. The blue `x` indicates the mean response time. Virtuoso and Oxigraph remain consistent throughout the ingestion process, where the other engines show a degradation of response times for multiple queries. 
+
+![query-response per request](benchmark/lineplot.svg)
+**Figure 2.** Individual query response times.
