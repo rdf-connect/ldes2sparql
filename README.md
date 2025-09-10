@@ -83,12 +83,16 @@ For reproducibility we set datetime constraints to the LDES replication process,
 | Qlever | 302825.197 | 0 |
 | Virtuoso | **334.591** | 0 |
 
-In Table 1 we see the results of our benchmark, where Virtuoso registers the fastest overall ingestion time with a total of 334.591s. Oxigraph comes at a close second place, followed by GraphDB, Fuseki, qEndpoint and Qlever. qEndpoint is the only graph store that produced request timeouts with 264 and a total time of 17039.606s, and although it didn't have timeouts, Qlever total ingestion time was by far the longest with 302825.197s (around three and a half days).
+In Table 1 we see the results of our benchmark, where `Virtuoso` registers the fastest overall ingestion time with a total of 334.591s. `Oxigraph` comes at a close second place, followed by `GraphDB`, `Fuseki`, `qEndpoint` and `Qlever`. `qEndpoint` is the only graph store that produced request timeouts with 264 and a total time of 17039.606s, and although it didn't have timeouts, `Qlever` total ingestion time was by far the longest with 302825.197s (around three and a half days).
 
 ![query-response distribution](benchmark/boxplot.svg)
 **Figure 1.** Update query response time distribution.
 
-In Figure 1 we can observe the distribution of response times of every update SPARQL query, executed to ingest each of the LDES members. The blue `x` indicates the mean response time. Virtuoso and Oxigraph remain consistent throughout the ingestion process, where the other engines show a degradation of response times for multiple queries. 
+In Figure 1 we can observe the distribution of response times of every update SPARQL query, executed to ingest each of the LDES members. The blue `x` indicates the mean response time. `Virtuoso` and `Oxigraph` remain consistent throughout the ingestion process, where the other engines show a degradation of response times for multiple queries. 
 
 ![query-response per request](benchmark/lineplot.svg)
 **Figure 2.** Individual query response times.
+
+Figure 2 shows how the ingestion process behaves over time for every graph store. We see how for both `Virtuoso` and `Oxigraph`, the query response time remains stable throuhgout the whole ingestion. `GraphDB` remains mostly stable as well, with the exception of a few high peaks (only 1 visible in the plot due to the smoothening) that increase the overall mean response time. `Fuseki` shows a degradation of query performance as time progresses and more data is ingested. For `qEndpoint` we observe a highly unstable process over time, that include the observed timeouts, making it unreliable. Lastly, for `Qlever` we can also observe a more pronounced linear degradation of query response as more data gets ingested.
+
+Overall `Virtuoso` and `Oxigraph` showed the best performance to replicate a relatively small LDES, and in general to handle fast and small data updates via standard SPARQL UPDATE queries. `GraphDB` was almost 3 times slower overall, yet it still displayed a performance level that may be acceptable in some cases, which added to their various UI tools, could make it an attractive option. `Fuseki` was 17 times slower overall and also showed a linear degradation in query performance that suggests that it won't be feasible to be used with larger datasets. Lastly, `qEndpoint` and `Qlever` showed to be unreliable (timeouts in `qEndpoint`) and highly inneficient for this particular scenario. In `Qlever`'s defense, it is mentioned in their wiki that [SPARQL UPDATES are still experimental](https://github.com/ad-freiburg/qlever/wiki/First-tests-with-SPARQL-1.1-Update#tldr) and that future work will make them more efficient.   
