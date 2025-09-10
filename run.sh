@@ -13,4 +13,4 @@ done
 
 
 # Execute the RDF-Connect pipeline with the JS-Runner
-exec npx @rdfc/js-runner rdfc-pipeline.ttl
+exec npx rdfc rdfc-pipeline.ttl

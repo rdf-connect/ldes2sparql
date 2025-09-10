@@ -1,116 +1,124 @@
-@prefix : <https://w3id.org/conn#>.
-@prefix js: <https://w3id.org/conn/js#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfc: <https://w3id.org/rdf-connect#>.
 @prefix rdfl: <https://w3id.org/rdf-lens/ontology#>.
 
-<> owl:imports <./node_modules/@rdfc/js-runner/ontology.ttl>,
-    <./node_modules/ldes-client/processor.ttl>,
-    <./node_modules/@rdfc/sparql-ingest-processor-ts/processors.ttl>.
+#########################################
+### Import runners and processors
+#########################################
+<> owl:imports <./node_modules/@rdfc/js-runner/index.ttl>.
+<> owl:imports <./node_modules/ldes-client/processor.ttl>.
+<> owl:imports <./node_modules/@rdfc/sparql-ingest-processor-ts/processors.ttl>.
 
 #########################################
-# Channel definitions
+### Define required channels
 #########################################
-
-# Channel for js:LdesClient -> js:SPARQLIngest
-<raw-member/reader> a js:JsReaderChannel.
-<raw-member/writer> a js:JsWriterChannel.
-[ ] a js:JsChannel;
-   :reader <raw-member/reader>;
-   :writer <raw-member/writer>.
-
+# Channel for rdfc:LdesClient -> rdfc:SPARQLIngest
+<members> a rdfc:Reader, rdfc:Writer.
 
 #########################################
-# Processor definitions
+### Define the pipeline
+#########################################
+<> a rdfc:Pipeline;
+    rdfc:consistsOf [
+        rdfc:instantiates rdfc:NodeRunner;
+        rdfc:processor <ldesClient>, <sparqlIngest>;
+    ].
+
+#########################################
+### Processor definitions
 #########################################
 
 # Processor to read member events from an LDES
-[ ] a js:LdesClient;
-    js:output <raw-member/writer>;
-    js:url [
+<ldesClient> a rdfc:LdesClient;
+    rdfc:url [
         a rdfl:EnvVariable;
         rdfl:envDefault "${LDES}";
         rdfl:envKey "LDES"
     ];
-    js:ordered [
+    rdfc:output <members>;
+    rdfc:ordered [
         a rdfl:EnvVariable;
         rdfl:envDefault "none";
         rdfl:envKey "ORDER"
     ];
-    js:follow [
+    rdfc:follow [
         a rdfl:EnvVariable;
         rdfl:envDefault "false"^^xsd:boolean;
         rdfl:envKey "FOLLOW"
     ];
-    js:interval [
+    rdfc:interval [
         a rdfl:EnvVariable;
         rdfl:envDefault "5000"^^xsd:integer; # Polling frequency in milliseconds
         rdfl:envKey "POLLING_FREQUENCY"
     ];
-    js:before [
+    rdfc:before [
         a rdfl:EnvVariable;
         rdfl:envDefault "5000-01-01T00:00:00.000Z"^^xsd:dateTime;
         rdfl:envKey "BEFORE"
     ];
-    js:after [
+    rdfc:after [
         a rdfl:EnvVariable;
         rdfl:envDefault "0000-01-01T00:00:00.000Z"^^xsd:dateTime;
         rdfl:envKey "AFTER"
     ];
-    js:materialize [
+    rdfc:materialize [
         a rdfl:EnvVariable;
         rdfl:envDefault "false"^^xsd:boolean;
         rdfl:envKey "MATERIALIZE"
     ];
-    js:lastVersionOnly [
+    rdfc:lastVersionOnly [
         a rdfl:EnvVariable;
         rdfl:envDefault "false"^^xsd:boolean;
         rdfl:envKey "LAST_VERSION_ONLY"
     ];
-    js:shapeFile "${SHAPE}";
-    js:fetch [
-        js:concurrent [
+    rdfc:shapeFile "${SHAPE}";
+    rdfc:fetch [
+        a rdfc:FetchConfig;
+        rdfc:concurrent [
             a rdfl:EnvVariable;
             rdfl:envDefault "10"^^xsd:integer;
             rdfl:envKey "CONCURRENT_FETCHES"
         ];
-        js:retry [
-            js:code 408, 425, 429, 500, 502, 503, 504;
-            js:maxRetry 15
+        rdfc:retry [
+            rdfc:code 408, 425, 429, 500, 502, 503, 504;
+            rdfc:maxRetry 15
         ]
     ];
-    js:savePath </state/ldes-client_state.json>.
+    rdfc:savePath "/state/ldes-client_state.json".
 
 # Processor to write SDS members into a SPARQL endpoint via SPARQL UPDATE queries
-[ ] a js:SPARQLIngest; 
-    js:memberStream <raw-member/reader>;
-    js:ingestConfig [
-        js:memberIsGraph false;
-        js:targetNamedGraph "${TARGET_GRAPH}";
-        js:graphStoreUrl [ # SPARQL endpoint URL
+<sparqlIngest> a rdfc:SPARQLIngest; 
+    rdfc:memberStream <members>;
+    rdfc:ingestConfig [
+        a rdfc:IngestConfig;
+        rdfc:memberIsGraph false;
+        rdfc:targetNamedGraph "${TARGET_GRAPH}";
+        rdfc:graphStoreUrl [ # SPARQL endpoint URL
             a rdfl:EnvVariable;
             rdfl:envDefault "${SPARQL_ENDPOINT}";
             rdfl:envKey "SPARQL_ENDPOINT"
         ];
-        js:forVirtuoso [ # Handle Virtuoso-specific case of query splitting due to size limits
+        rdfc:forVirtuoso [ # Handle Virtuoso-specific case of query splitting due to size limits
             a rdfl:EnvVariable;
             rdfl:envDefault "false"^^xsd:boolean;
             rdfl:envKey "FOR_VIRTUOSO"
         ];
-        js:accessToken "${ACCESS_TOKEN}"; # Required for Qlever
-        js:measurePerformance [
-            js:name [
+        rdfc:accessToken "${ACCESS_TOKEN}"; # Required for Qlever
+        rdfc:measurePerformance [
+            a rdfc:PerformanceConfig;
+            rdfc:name [
                 a rdfl:EnvVariable;
                 rdfl:envDefault "response-times";
                 rdfl:envKey "PERF_NAME"
             ];
-            js:outputPath </performance>;
-            js:failureIsFatal [
+            rdfc:outputPath "/performance";
+            rdfc:failureIsFatal [
                 a rdfl:EnvVariable;
                 rdfl:envDefault "true"^^xsd:boolean;
                 rdfl:envKey "FAILURE_IS_FATAL"
             ];
-            js:queryTimeout [
+            rdfc:queryTimeout [
                 a rdfl:EnvVariable;
                 rdfl:envDefault "1800"^^xsd:integer; # 30 minutes
                 rdfl:envKey "QUERY_TIMEOUT"
