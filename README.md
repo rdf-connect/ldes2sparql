@@ -26,11 +26,14 @@ docker run \
 -e "AFTER=2024-12-31T23:59:59.999Z" (optional)\
 -e "BEFORE=2026-01-01T00:00:00.000Z" (optional)\
 -e "SHAPE=https://my.dereferenceable.shape" (optional)\
+-e "OPERATION_MODE=[Sync|Replication]" (optional)\
+-e "MEMBER_BATCH_SIZE=500" (optional)\
 -e "FOR_VIRTUOSO=true" (optional)\
 -e "ACCESS_TOKEN=marine-regions_1234" (optional)\
 -e "PERF_NAME=virtuoso" (optional) \
 -e "FAILURE_IS_FATAL[true|false]" (optional) \
 -e "QUERY_TIMEOUT=30" (optional) \
+-e "START_FRESH=[true|false]" (optional) \
 -v /your/state/folder:/state \
 -v /your/benchmark/folder:/performance \
 ghcr.io/rdf-connect/ldes2sparql:latest
@@ -42,27 +45,37 @@ The container can also be run using an environment [config file](https://github.
 docker run --env-file conf.env -v /your/state/folder:/state ghcr.io/rdf-connect/ldes2sparql:latest
 ```
 
-A descritpion of all available environment variables is presented next:performance
+## Parameters
 
-- **`LDES`**: The URL of the LDES to be replicated and followed.
-- **`SPARQL_ENDPOINT`**: The URL of the target SPARQL graph store, which must support the [SPARQL UPDATE specification](https://www.w3.org/TR/sparql11-update/).
-- **`TARGET_GRAPH`** (optional): An IRI of a targeted named graph where all replicated triples will be written. If not required, define it with an empty value (`TARGET_GRAPH=`), otherwise invalid queries will be produced.
-- **`ORDER`** (optional): An instruction for the LDES client to emit members in `ascending` or `descending` temporal order (based on the `ldes:timestampPath` property value).
-- **`FOLLOW`** (optional): A property that indicates whether the LDES client should continue to poll the LDES for new events after the replication has been completed. The default value is `false`.
-- **`POLLING_FREQUENCY`** (optional): A property that instructs the client to poll the LDES following the given frequency to check for new events after replication. It is given in milliseconds and it is igperformancenored if `FOLLOW` is set to `false`. 
-- **`MATERIALIZE`** (optional): Property that instructs the LDES client to materialize replicated members (i.e., to use the declared `ldes:versionOfPath` property value as the member subject). The default value is `false`.
-- **`LAST_VERSION_ONLY`** (optional): Property that instructs the client to only emit the latest versions of every member. If enabled, it enforces the LDES client to emit members in an `descending` temporal order. The default value is `false`.
-- **`AFTER`** (optional): Datetime property that instructs the client to only emit memebers timestamped after (exclusive) the given datetime. 
-- **`BEFORE`** (optional): Datetime property that instructs the client to only emit memebers timestamped before (exclusive) the given datetime.
-- **`SHAPE`** (optional): URL of a SHACL shape that the LDES client will use to guide the [member extraction process](https://github.com/TREEcg/extract-cbd-shape) to, for example, emit members with property subsets or include out-of-band (i.e., externally linked) property values. Alternatively, a local shape file may be used, but this requires the Docker image of `ldes2sparql` to be rebuilt including such shape file.
-- **`CONCURRENT_FETCHES`** (optional): Maximum number of concurrent HTTP requests that the LDES client may perform while replicating the LDES. For some LDES, this needs to be limited to avoid, for example, `HTTP 429 Too many requests` responses. 
-- **`FOR_VIRTUOSO`** (optional): Property to indicate that the target SPARQL graph store is a Virtuso instance, which then splits large INSERT DATA queries, to avoid Virtuoso's hard limits such as the [max SQL query length](https://github.com/openlink/virtuoso-opensource/blob/develop/7/libsrc/Wi/sparql2sql.h#L1031) and the [max query vector size](https://community.openlinksw.com/t/virtuosoexception-sq199/1950).
-- **`ACCESS_TOKEN`** (optional): Security property that is required to [enable SPARQL UPDATE queries in Qlever](https://github.com/ad-freiburg/qlever/blob/41864b6cc95e167e098ee7466af37ccc8a925723/src/engine/Server.cpp#L497).
-- **`PERF_NAME`** (optional): Name of the file that will be use to record the individual request times for benchmarking purposes.
-- **`FAILURE_IS_FATAL`** (optional): Indicates whether the pipeline execution is fully stopped when a query does not succeed.
-- **`QUERY_TIMEOUT`** (optional): Maximum time in seconds that is allowed for a query to be resolved. If the time is exceeded, an error will be thrown. If not specified, a default timeout of 30 mins will be set. 
+A description of all available environment variables is presented next:
 
-## Benchmarks
+| Variable Name | Mandatory or Optional | Value Type | Example Value | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `LDES` | Mandatory | URL | `http://marineregions.org/feed` | The URL of the LDES to be replicated and followed. |
+| `SPARQL_ENDPOINT` | Mandatory | URL | `http://localhost:8890/sparql` | The URL of the target SPARQL graph store, which must support the [SPARQL UPDATE specification](https://www.w3.org/TR/sparql11-update/). |
+| `OPERATION_MODE` | Mandatory | `Replication`, `Sync` | `Sync` | Defines the operation mode of the pipeline. `Replication` mode relies on the [SPARQL Graph Store Protocol](https://www.w3.org/TR/sparql11-http-rdf-update/) to ingest data directly into a triple store (normally faster than using SPARQL UPDATE queries), which assumes that all received data is meant to be added (Updates or Deletes are not supported). `Sync` mode uses the [SPARQL UPDATE specification](https://www.w3.org/TR/sparql11-update/) to ingest data via SPARQL queries, allowing for all Create/Update/Delete operations. |
+| `MEMBER_BATCH_SIZE` | Mandatory | Number | `500` | The number of members to be processed in each batch. |
+| `TARGET_GRAPH` | Optional* | IRI | `https://example.org/graph` | An IRI of a targeted named graph where all replicated triples will be written. If not required, define it with an empty value (`TARGET_GRAPH=`), otherwise invalid queries will be produced. |
+| `ORDER` | Optional | `ascending`, `descending` | `descending` | An instruction for the LDES client to emit members in `ascending` or `descending` temporal order (based on the `ldes:timestampPath` property value). |
+| `FOLLOW` | Optional | `true`, `false` | `false` | A property that indicates whether the LDES client should continue to poll the LDES for new events after the replication has been completed. The default value is `false`. |
+| `POLLING_FREQUENCY` | Optional | Number | `5000` | A property that instructs the client to poll the LDES following the given frequency to check for new events after replication. It is given in milliseconds and it is ignored if `FOLLOW` is set to `false`. |
+| `MATERIALIZE` | Optional | `true`, `false` | `false` | Property that instructs the LDES client to materialize replicated members (i.e., to use the declared `ldes:versionOfPath` property value as the member subject). The default value is `false`. |
+| `LAST_VERSION_ONLY` | Optional | `true`, `false` | `false` | Property that instructs the client to only emit the latest versions of every member. If enabled, it enforces the LDES client to emit members in an `descending` temporal order. The default value is `false`. |
+| `AFTER` | Optional | Datetime | `2025-01-01T00:00:00.000Z` | Datetime property that instructs the client to only emit memebers timestamped after (exclusive) the given datetime. |
+| `BEFORE` | Optional | Datetime | `2026-01-01T00:00:00.000Z` | Datetime property that instructs the client to only emit memebers timestamped before (exclusive) the given datetime. |
+| `SHAPE` | Optional* | URL | `https://example.org/shape` | URL of a SHACL shape that the LDES client will use to guide the [member extraction process](https://github.com/TREEcg/extract-cbd-shape) to, for example, emit members with property subsets or include out-of-band (i.e., externally linked) property values. Alternatively, a local shape file may be used, but this requires the Docker image of `ldes2sparql` to be rebuilt including such shape file. |
+| `CONCURRENT_FETCHES` | Optional | Number | `10` | Maximum number of concurrent HTTP requests that the LDES client may perform while replicating the LDES. For some LDES, this needs to be limited to avoid, for example, `HTTP 429 Too many requests` responses. |
+| `START_FRESH` | Optional | `true`, `false` | `false` | Property that instructs the LDES client to start with a fresh state. It will delete any pre-existing state present in the given state path (e.g., via `-v /your/state/folder:/state`). |
+| `FOR_VIRTUOSO` | Optional | `true`, `false` | `false` | Property to indicate that the target SPARQL graph store is a Virtuso instance, which then splits large INSERT DATA queries, to avoid Virtuoso's hard limits such as the [max SQL query length](https://github.com/openlink/virtuoso-opensource/blob/develop/7/libsrc/Wi/sparql2sql.h#L1031) and the [max query vector size](https://community.openlinksw.com/t/virtuosoexception-sq199/1950). |
+| `ACCESS_TOKEN` | Optional | String | `my_token` | Security property that is required to [enable SPARQL UPDATE queries in Qlever](https://github.com/ad-freiburg/qlever/blob/41864b6cc95e167e098ee7466af37ccc8a925723/src/engine/Server.cpp#L497). |
+| `PERF_NAME` | Optional | String | `perf_file` | Name of the file that will be use to record the individual request times for benchmarking purposes. |
+| `FAILURE_IS_FATAL` | Optional | `true`, `false` | `true` | Indicates whether the pipeline execution is fully stopped when a query does not succeed. |
+| `QUERY_TIMEOUT` | Optional | Number | `1800` | Maximum time in seconds that is allowed for a query to be resolved. If the time is exceeded, an error will be thrown. If not specified, a default timeout of 30 mins will be set. |
+> *This parameter is optional but must be present to avoid crashing the LDES client. **Leave it empty if not required**. A proper solution to this issue is in the works.
+
+## Benchmarks 
+
+> **Note:** The following results were obtained using [this version of `ldes2sparql`](https://github.com/MareGraph-EU/ldes2sparql/commit/d83a31911237176edefedc2b8f49b0522e2629ea)
 
 We run some benchmarks using `ldes2sparql` to fully replicate the [Marine Regions (mirror) LDES](http://193.190.127.143:8080/marine-regions-mirror/ldes) into different open source SPARQL graph stores.
 
