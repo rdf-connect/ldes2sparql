@@ -47,11 +47,16 @@ LDES=http://193.190.127.143:8080/marine-regions-mirror/ldes
 MATERIALIZE=true
 
 ### SPARQL ingest variables
+OPERATION_MODE=Sync
+MEMBER_BATCH_SIZE=1000 # Use if running in Replication mode
 SPARQL_ENDPOINT=http://{YOUR_LOCAL_IP}:7200/repositories/mr-repo/statements
 TARGET_GRAPH=https://www.marineregions.org/graph # For GraphDB a named graph is optional
 MAX_QUERY_LENGTH=10000 # A high number as it optimizes write performance
 ```
 The path name `/mr-repo/` in the `SPARQL_ENDPOINT` parameter corresponds to the `rep:repositoryID` property defined in the repository config in `repo-config.ttl`.
+
+If `OPERATION_MODE` is set to `Replication`, set `SPARQL_ENDPOINT` to `http://{YOUR_LOCAL_IP}:7200/repositories/mr-repo/rdf-graphs/service?graph={YOUR_URL_ENCODED_TARGET_GRAPH}` or `http://{YOUR_LOCAL_IP}:7200/repositories/mr-repo/rdf-graphs/service?default` to use the SPARQL Graph Store protocol.
+
 3. Execute the pipeline with the following Docker command:
 ```bash
 docker run --env-file conf.env ghcr.io/rdf-connect/ldes2sparql

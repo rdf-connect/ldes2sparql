@@ -36,10 +36,15 @@ LDES=http://193.190.127.143:8080/marine-regions-mirror/ldes
 MATERIALIZE=true
 
 ### SPARQL ingest variables
+OPERATION_MODE=Sync
+MEMBER_BATCH_SIZE=1000 # Use if running in Replication mode
 SPARQL_ENDPOINT=http://{YOUR_LOCAL_IP}:8890/sparql
 TARGET_GRAPH=https://www.marineregions.org/graph # For Virtuoso a named graph is mandatory
 FOR_VIRTUOSO=true # Indicate that big queries need to be splitted
 ```
+
+If `OPERATION_MODE` is set to `Replication`, set `SPARQL_ENDPOINT` to `http://{YOUR_LOCAL_IP}:8890/sparql-graph-crud/` to use the SPARQL Graph Store protocol.
+
 3. Execute the pipeline with the following Docker command:
 ```bash
 docker run --env-file conf.env ghcr.io/rdf-connect/ldes2sparql

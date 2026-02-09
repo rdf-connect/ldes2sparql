@@ -7,9 +7,9 @@
 ### Import runners and processors
 #########################################
 <> owl:imports <./node_modules/@rdfc/js-runner/index.ttl>.
+
 <> owl:imports <./node_modules/ldes-client/processor.ttl>.
 <> owl:imports <./node_modules/@rdfc/sparql-ingest-processor-ts/processors.ttl>.
-
 #########################################
 ### Define required channels
 #########################################
@@ -20,108 +20,127 @@
 ### Define the pipeline
 #########################################
 <> a rdfc:Pipeline;
-    rdfc:consistsOf [
-        rdfc:instantiates rdfc:NodeRunner;
-        rdfc:processor <ldesClient>, <sparqlIngest>;
-    ].
+  rdfc:consistsOf [
+    rdfc:instantiates rdfc:NodeRunner;
+    rdfc:processor <ldesClient>, <sparqlIngest>;
+  ].
 
 #########################################
 ### Processor definitions
 #########################################
-
 # Processor to read member events from an LDES
 <ldesClient> a rdfc:LdesClient;
-    rdfc:url [
-        a rdfl:EnvVariable;
-        rdfl:envDefault "${LDES}";
-        rdfl:envKey "LDES"
+  rdfc:url [
+    a rdfl:EnvVariable;
+    rdfl:envDefault "${LDES}";
+    rdfl:envKey "LDES";
+  ];
+  rdfc:output <members>;
+  rdfc:ordered [
+    a rdfl:EnvVariable;
+    rdfl:envDefault "none";
+    rdfl:envKey "ORDER";
+  ];
+  rdfc:follow [
+    a rdfl:EnvVariable;
+    rdfl:envDefault "false"^^xsd:boolean;
+    rdfl:envKey "FOLLOW";
+  ];
+  rdfc:interval [
+    a rdfl:EnvVariable;
+    rdfl:envDefault "5000"^^xsd:integer;
+    # Polling frequency in milliseconds
+    rdfl:envKey "POLLING_FREQUENCY";
+  ];
+  rdfc:before [
+    a rdfl:EnvVariable;
+    rdfl:envDefault "5000-01-01T00:00:00.000Z"^^xsd:dateTime;
+    rdfl:envKey "BEFORE";
+  ];
+  rdfc:after [
+    a rdfl:EnvVariable;
+    rdfl:envDefault "0000-01-01T00:00:00.000Z"^^xsd:dateTime;
+    rdfl:envKey "AFTER";
+  ];
+  rdfc:materialize [
+    a rdfl:EnvVariable;
+    rdfl:envDefault "false"^^xsd:boolean;
+    rdfl:envKey "MATERIALIZE";
+  ];
+  rdfc:lastVersionOnly [
+    a rdfl:EnvVariable;
+    rdfl:envDefault "false"^^xsd:boolean;
+    rdfl:envKey "LAST_VERSION_ONLY";
+  ];
+  rdfc:shapeFile "${SHAPE}";
+  rdfc:fetch [
+    a rdfc:FetchConfig;
+    rdfc:concurrent [
+      a rdfl:EnvVariable;
+      rdfl:envDefault "10"^^xsd:integer;
+      rdfl:envKey "CONCURRENT_FETCHES";
     ];
-    rdfc:output <members>;
-    rdfc:ordered [
-        a rdfl:EnvVariable;
-        rdfl:envDefault "none";
-        rdfl:envKey "ORDER"
+    rdfc:retry [
+      rdfc:code 408, 425, 429, 500, 502, 503, 504;
+      rdfc:maxRetry 15;
     ];
-    rdfc:follow [
-        a rdfl:EnvVariable;
-        rdfl:envDefault "false"^^xsd:boolean;
-        rdfl:envKey "FOLLOW"
-    ];
-    rdfc:interval [
-        a rdfl:EnvVariable;
-        rdfl:envDefault "5000"^^xsd:integer; # Polling frequency in milliseconds
-        rdfl:envKey "POLLING_FREQUENCY"
-    ];
-    rdfc:before [
-        a rdfl:EnvVariable;
-        rdfl:envDefault "5000-01-01T00:00:00.000Z"^^xsd:dateTime;
-        rdfl:envKey "BEFORE"
-    ];
-    rdfc:after [
-        a rdfl:EnvVariable;
-        rdfl:envDefault "0000-01-01T00:00:00.000Z"^^xsd:dateTime;
-        rdfl:envKey "AFTER"
-    ];
-    rdfc:materialize [
-        a rdfl:EnvVariable;
-        rdfl:envDefault "false"^^xsd:boolean;
-        rdfl:envKey "MATERIALIZE"
-    ];
-    rdfc:lastVersionOnly [
-        a rdfl:EnvVariable;
-        rdfl:envDefault "false"^^xsd:boolean;
-        rdfl:envKey "LAST_VERSION_ONLY"
-    ];
-    rdfc:shapeFile "${SHAPE}";
-    rdfc:fetch [
-        a rdfc:FetchConfig;
-        rdfc:concurrent [
-            a rdfl:EnvVariable;
-            rdfl:envDefault "10"^^xsd:integer;
-            rdfl:envKey "CONCURRENT_FETCHES"
-        ];
-        rdfc:retry [
-            rdfc:code 408, 425, 429, 500, 502, 503, 504;
-            rdfc:maxRetry 15
-        ]
-    ];
-    rdfc:savePath "/state/ldes-client_state.json".
+  ];
+  rdfc:startFresh [
+    a rdfl:EnvVariable;
+    rdfl:envDefault "false"^^xsd:boolean;
+    rdfl:envKey "START_FRESH";
+  ];
+  rdfc:savePath "/state".
 
 # Processor to write SDS members into a SPARQL endpoint via SPARQL UPDATE queries
-<sparqlIngest> a rdfc:SPARQLIngest; 
-    rdfc:memberStream <members>;
-    rdfc:ingestConfig [
-        a rdfc:IngestConfig;
-        rdfc:memberIsGraph false;
-        rdfc:targetNamedGraph "${TARGET_GRAPH}";
-        rdfc:graphStoreUrl [ # SPARQL endpoint URL
-            a rdfl:EnvVariable;
-            rdfl:envDefault "${SPARQL_ENDPOINT}";
-            rdfl:envKey "SPARQL_ENDPOINT"
-        ];
-        rdfc:forVirtuoso [ # Handle Virtuoso-specific case of query splitting due to size limits
-            a rdfl:EnvVariable;
-            rdfl:envDefault "false"^^xsd:boolean;
-            rdfl:envKey "FOR_VIRTUOSO"
-        ];
-        rdfc:accessToken "${ACCESS_TOKEN}"; # Required for Qlever
-        rdfc:measurePerformance [
-            a rdfc:PerformanceConfig;
-            rdfc:name [
-                a rdfl:EnvVariable;
-                rdfl:envDefault "response-times";
-                rdfl:envKey "PERF_NAME"
-            ];
-            rdfc:outputPath "/performance";
-            rdfc:failureIsFatal [
-                a rdfl:EnvVariable;
-                rdfl:envDefault "true"^^xsd:boolean;
-                rdfl:envKey "FAILURE_IS_FATAL"
-            ];
-            rdfc:queryTimeout [
-                a rdfl:EnvVariable;
-                rdfl:envDefault "1800"^^xsd:integer; # 30 minutes
-                rdfl:envKey "QUERY_TIMEOUT"
-            ]
-        ]
-    ].
+<sparqlIngest> a rdfc:SPARQLIngest;
+  rdfc:memberStream <members>;
+  rdfc:ingestConfig [
+    a rdfc:IngestConfig;
+    rdfc:operationMode [
+      a rdfl:EnvVariable;
+      rdfl:envDefault "Sync";
+      rdfl:envKey "OPERATION_MODE";
+    ];
+    rdfc:memberBatchSize [
+      a rdfl:EnvVariable;
+      rdfl:envDefault "500"^^xsd:integer;
+      rdfl:envKey "MEMBER_BATCH_SIZE";
+    ];
+    rdfc:targetNamedGraph "${TARGET_GRAPH}";
+    rdfc:graphStoreUrl [
+      # SPARQL endpoint URL
+      a rdfl:EnvVariable;
+      rdfl:envDefault "${SPARQL_ENDPOINT}";
+      rdfl:envKey "SPARQL_ENDPOINT";
+    ];
+    rdfc:forVirtuoso [
+      # Handle Virtuoso-specific case of query splitting due to size limits
+      a rdfl:EnvVariable;
+      rdfl:envDefault "false"^^xsd:boolean;
+      rdfl:envKey "FOR_VIRTUOSO";
+    ];
+    # Required for Qlever
+    rdfc:accessToken "${ACCESS_TOKEN}";
+    rdfc:measurePerformance [
+      a rdfc:PerformanceConfig;
+      rdfc:name [
+        a rdfl:EnvVariable;
+        rdfl:envDefault "response-times";
+        rdfl:envKey "PERF_NAME";
+      ];
+      rdfc:outputPath "/performance";
+      rdfc:failureIsFatal [
+        a rdfl:EnvVariable;
+        rdfl:envDefault "true"^^xsd:boolean;
+        rdfl:envKey "FAILURE_IS_FATAL";
+      ];
+      rdfc:queryTimeout [
+        a rdfl:EnvVariable;
+        rdfl:envDefault "1800"^^xsd:integer;
+        # 30 minutes
+        rdfl:envKey "QUERY_TIMEOUT";
+      ];
+    ];
+  ].
+
