@@ -6,9 +6,9 @@ In this example, we show how to replicate and materialize the (mirrored) [Marine
 
 Fuseki does not have an official Docker image in a public registry, but they do provide the [required files and instructions](https://github.com/apache/jena/tree/main/jena-fuseki2/jena-fuseki-docker) to build and run an instance using Docker. We provide such files in this repository. Run the following commands to spin up a Fuseki instance:
 
-1. Build the Docker image. At the time of writing Jena's latest version was 5.5.0:
+1. Build the Docker image. At the time of writing Jena's latest version was 6.0.0:
 ```bash
-docker build --force-rm --build-arg JENA_VERSION=5.5.0 -t fuseki .
+docker build --force-rm --build-arg JENA_VERSION=6.0.0 -t fuseki .
 ```
 2. Start up a Fuseki instance. In this example, we opt for a persisted Fuseki on disk based on [TBD2](https://jena.apache.org/documentation/tdb2/) (`--tdb2`), we enable SPARQL UPDATE queries (`--update`) and increase the default memory limit of Java from 2GB to 8GB. Check the [Fuseki docs](https://jena.apache.org/documentation/fuseki2/fuseki-configuration.html) for a complete list of configuration parameters:  
 ```bash
@@ -37,6 +37,9 @@ SPARQL_ENDPOINT=http://{YOUR_LOCAL_IP}:3030/marine-regions/update
 TARGET_GRAPH=https://www.marineregions.org/graph # For Fuseki a named graph is optional
 MAX_QUERY_LENGTH=10000 # A high number as it optimizes write performance
 ```
+
+If `OPERATION_MODE` is set to `Replication`, set `SPARQL_ENDPOINT` to `http://{YOUR_LOCAL_IP}:3030/marine-regions/data` to use the SPARQL Graph Store protocol.
+
 3. Execute the pipeline with the following Docker command:
 ```bash
 docker run --env-file conf.env ghcr.io/rdf-connect/ldes2sparql

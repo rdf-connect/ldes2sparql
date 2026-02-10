@@ -37,6 +37,10 @@ SPARQL_ENDPOINT=http://{YOUR_LOCAL_IP}:7878/update
 TARGET_GRAPH=https://www.marineregions.org/graph # For Oxigraph a named graph is optional
 MAX_QUERY_LENGTH=10000 # A high number as it optimizes write performance
 ```
+
+If `OPERATION_MODE` is set to `Replication`, set `SPARQL_ENDPOINT` to `http://{YOUR_LOCAL_IP}:7878/store` to use the SPARQL Graph Store protocol.
+
+
 3. Execute the pipeline with the following Docker command:
 ```bash
 docker run --env-file conf.env ghcr.io/rdf-connect/ldes2sparql
