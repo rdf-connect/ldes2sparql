@@ -2,13 +2,13 @@
 
 [RDF-Connect](https://rdf-connect.github.io/) pipeline for materializing [Linked Data Event Streams (LDES)](https://w3id.org/ldes/specification) into a target SPARQL graph store.
 
-Internally, it uses the Typescript [ldes-client](https://github.com/rdf-connect/ldes-client) and the also Typescript [sparql-ingest-processor](https://github.com/rdf-connect/sparql-ingest-processor-ts).  
+Internally, it uses the Typescript [ldes-client](https://github.com/Maregraph-EU/ldes-client) and the also Typescript [sparql-ingest-processor](https://github.com/Maregraph-EU/sparql-ingest-processor-ts).  
 
 ## Run with docker
 
 Pull the docker image:
 ```bash
-docker pull ghcr.io/rdf-connect/ldes2sparql:latest
+docker pull ghcr.io/Maregraph-EU/ldes2sparql:latest
 ```
 
 Run a container instance with the following command:
@@ -36,13 +36,13 @@ docker run \
 -e "START_FRESH=[true|false]" (optional) \
 -v /your/state/folder:/state \
 -v /your/benchmark/folder:/performance \
-ghcr.io/rdf-connect/ldes2sparql:latest
+ghcr.io/Maregraph-EU/ldes2sparql:latest
 ```
 
-The container can also be run using an environment [config file](https://github.com/rdf-connect/ldes2sparql/blob/main/conf.env) as follows:
+The container can also be run using an environment [config file](https://github.com/Maregraph-EU/ldes2sparql/blob/main/conf.env) as follows:
 
 ```bash
-docker run --env-file conf.env -v /your/state/folder:/state ghcr.io/rdf-connect/ldes2sparql:latest
+docker run --env-file conf.env -v /your/state/folder:/state ghcr.io/Maregraph-EU/ldes2sparql:latest
 ```
 
 ## Parameters
@@ -84,7 +84,7 @@ We measured the time that took `ldes2sparql` to fully replicate the LDES into th
 - `64GB of RAM` (with 60GB allocated to the SPARQL engines) 
 - `512GB Western Digital TM PC SN810 NVMeTM SSD`
 
-For reproducibility we set datetime constraints to the LDES replication process, instructing the LDES client to replicate all members before `2025-08-14T00:00:00.000Z`, which results in a total of `64369 members`, that are then materialized (i.e., we end up with the latest version of every member) into a knowledge graph having `749862 triples` in total. We don't set a target named graph for the ingestion queries, mainly because [qEndpoint does not support named graphs in its docker version](https://github.com/the-qa-company/qEndpoint/issues/616), with the exception of Virtuoso for which is mandatory to set a target named graph. The benchmarks were executed using the [`hyperfine`](https://github.com/sharkdp/hyperfine) tool with the [script available in this repository](https://github.com/rdf-connect/ldes2sparql/blob/main/benchmark/benchmark.sh).
+For reproducibility we set datetime constraints to the LDES replication process, instructing the LDES client to replicate all members before `2025-08-14T00:00:00.000Z`, which results in a total of `64369 members`, that are then materialized (i.e., we end up with the latest version of every member) into a knowledge graph having `749862 triples` in total. We don't set a target named graph for the ingestion queries, mainly because [qEndpoint does not support named graphs in its docker version](https://github.com/the-qa-company/qEndpoint/issues/616), with the exception of Virtuoso for which is mandatory to set a target named graph. The benchmarks were executed using the [`hyperfine`](https://github.com/sharkdp/hyperfine) tool with the [script available in this repository](https://github.com/Maregraph-EU/ldes2sparql/blob/main/benchmark/benchmark.sh).
 
 **Table 1.** Total execution time for a full LDES replication.
 | SPARQL engine | Total time [s] | Timeouts |
