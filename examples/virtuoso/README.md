@@ -20,7 +20,7 @@ SPARQL UPDATE queries are disallowed by default in Virtuoso, but we enable them 
 
 ## Execute ldes2sparql
 
-To start the replication and materialization process, run the `ldes2sparql` pipeline followin the next steps:
+To start the replication and materialization process, run the `ldes2sparql` pipeline following the next steps:
 
 1. Download the `ldes2sparql` Docker image:
 ```bash

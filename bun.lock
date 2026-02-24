@@ -7,7 +7,7 @@
       "dependencies": {
         "@rdfc/js-runner": "^3.0.2",
         "@rdfc/orchestrator-js": "^2.0.1",
-        "@rdfc/sparql-ingest-processor-ts": "^2.1.4",
+        "@rdfc/sparql-ingest-processor-ts": "^2.1.5",
         "ldes-client": "^0.3.0",
       },
     },
@@ -138,7 +138,7 @@
 
     "@rdfc/proto": ["@rdfc/proto@0.1.2", "", { "dependencies": { "@bufbuild/protobuf": "^2.2.3" }, "peerDependencies": { "@grpc/grpc-js": "^1.12.6" } }, "sha512-RZQwfG4Eb3F5enKmqQ5DWl6Fvr1B4p+42T5llaRI+UJhG2egyzEXbJmfFeHiv6VJYbXN40FWuwU3z2f6Tfs5kg=="],
 
-    "@rdfc/sparql-ingest-processor-ts": ["@rdfc/sparql-ingest-processor-ts@2.1.5", "", { "dependencies": { "@treecg/types": "^0.4.6", "n3": "^1.26.0", "rdf-data-factory": "^2.0.2", "rdf-stores": "^2.1.1", "undici": "^7.21.0", "winston": "^3.19.0" } }, "sha512-vgHpDlwMItemV4Mo7ttzNf5KEnWVJLq5xQ1mRRrX3QAyphII1JDNDF9gWIj1/H44PpzxlOlngWQsoWYAUelzaA=="],
+    "@rdfc/sparql-ingest-processor-ts": ["@rdfc/sparql-ingest-processor-ts@2.1.6", "", { "dependencies": { "@treecg/types": "^0.4.6", "n3": "^1.26.0", "rdf-data-factory": "^2.0.2", "rdf-stores": "^2.1.1", "undici": "^7.22.0", "winston": "^3.19.0" } }, "sha512-0hm0UnzVwI0tn9B4XyXi7G2ytk6Zbe7B2SwISEQu1BYLUP/Mx9lwWnZuGY1ktk++2MDZQ2r7Vvcull55mQ4Okg=="],
 
     "@rdfjs/types": ["@rdfjs/types@2.0.1", "", { "dependencies": { "@types/node": "*" } }, "sha512-uyAzpugX7KekAXAHq26m3JlUIZJOC0uSBhpnefGV5i15bevDyyejoB7I+9MKeUrzXD8OOUI3+4FeV1wwQr5ihA=="],
 
@@ -424,7 +424,7 @@
 
     "triple-beam": ["triple-beam@1.4.1", "", {}, "sha512-aZbgViZrg1QNcG+LULa7nhZpJTZSLm/mXnHXnbAbjmN5aSa0y7V+wvv6+4WaBtpISJzThKy+PIPxc1Nq1EJ9mg=="],
 
-    "undici": ["undici@7.21.0", "", {}, "sha512-Hn2tCQpoDt1wv23a68Ctc8Cr/BHpUSfaPYrkajTXOS9IKpxVRx/X5m1K2YkbK2ipgZgxXSgsUinl3x+2YdSSfg=="],
+    "undici": ["undici@7.22.0", "", {}, "sha512-RqslV2Us5BrllB+JeiZnK4peryVTndy9Dnqq62S3yYRRTj0tFQCwEniUy2167skdGOy3vqRzEvl1Dm4sV2ReDg=="],
 
     "undici-types": ["undici-types@7.10.0", "", {}, "sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag=="],
 
