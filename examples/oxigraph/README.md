@@ -12,7 +12,7 @@ docker pull ghcr.io/oxigraph/oxigraph:latest
 ```
 2. Start up an Oxigraph instance:
 ```bash
-docker run -v `pwd`:/data -p 7878:7878 ghcr.io/oxigraph/oxigraph serve --location /data --bind 0.0.0.0:7878
+docker run --rm --name oxigraph -v `pwd`:/data -p 7878:7878 ghcr.io/oxigraph/oxigraph serve --location /data --bind 0.0.0.0:7878
 ```
 
 ## Execute ldes2sparql
