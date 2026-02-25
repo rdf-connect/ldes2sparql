@@ -1,5 +1,5 @@
 # Start from a Node.js ready image
-FROM node:lts-alpine
+FROM node:25.6.1-alpine
 # Add bash (not included in the alpine base image)
 RUN apk update && apk upgrade && apk add --update bash
 # Create the folder for keeping the state
